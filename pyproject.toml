@@ -1,0 +1,2 @@
+[tool.black]
+exclude = '(\.git|\.tox|\.nox|\.coverage|^\.env|\.venv|site-packages)'

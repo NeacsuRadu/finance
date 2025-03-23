@@ -1,5 +1,5 @@
 class Portofolio:
-    
+
     def __init__(self):
         self.cash = 0
         self.cashOperations = []
