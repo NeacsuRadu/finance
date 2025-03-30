@@ -6,9 +6,7 @@ from datetime import datetime
 class TestCashOperation(unittest.TestCase):
     def setUp(self):
         timestamp = round(
-            datetime.strptime(
-                "06.08.2024 10:25:39", "%d.%m.%Y %H:%M:%S"
-            ).timestamp()
+            datetime.strptime("06.08.2024 10:25:39", "%d.%m.%Y %H:%M:%S").timestamp()
         )
         self.op = CashOperation("deposit", 32.5, timestamp)
 
@@ -20,17 +18,13 @@ class TestCashOperation(unittest.TestCase):
 
     def test_isBeforeReturnsTrueIfParamIsInFuture(self):
         timestamp = round(
-            datetime.strptime(
-                "12.09.2024 11:25:39", "%d.%m.%Y %H:%M:%S"
-            ).timestamp()
+            datetime.strptime("12.09.2024 11:25:39", "%d.%m.%Y %H:%M:%S").timestamp()
         )
         self.assertTrue(self.op.isBefore(timestamp))
 
     def test_isBeforeReturnsFalseIfParamIsInPast(self):
         timestamp = round(
-            datetime.strptime(
-                "12.09.2023 11:25:39", "%d.%m.%Y %H:%M:%S"
-            ).timestamp()
+            datetime.strptime("12.09.2023 11:25:39", "%d.%m.%Y %H:%M:%S").timestamp()
         )
         self.assertFalse(self.op.isBefore(timestamp))
 
