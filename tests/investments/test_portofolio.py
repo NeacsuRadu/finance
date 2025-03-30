@@ -14,5 +14,5 @@ class TestPortofolio(unittest.TestCase):
         self.assertEqual(len(p.cashOperations), 1)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()
