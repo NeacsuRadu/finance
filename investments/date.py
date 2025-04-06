@@ -12,6 +12,9 @@ class Date:
     def isWeekDay(self):
         return self.__datetime.weekday() < 5
 
+    def isBefore(self, date: "Date"):
+        return self.__datetime < date.__datetime
+
     def getLastWeekDayDate(self):
         if self.__isSaturday():
             one_day_ago = self.__datetime + timedelta(days=-1)
