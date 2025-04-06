@@ -16,6 +16,18 @@ class TestDate(unittest.TestCase):
         d = Date(23, 3, 2025)
         self.assertFalse(d.isWeekDay())
 
+    def test_isBeforeReturnsFalse(self):
+        date1 = Date(23, 3, 2025)
+        date2 = Date(13, 4, 2024)
+
+        self.assertFalse(date1.isBefore(date2))
+
+    def test_isBeforeReturnTrue(self):
+        date1 = Date(23, 3, 2025)
+        date2 = Date(13, 4, 2024)
+
+        self.assertTrue(date2.isBefore(date1))
+
     def test_getLastWeekDayDateReturnsFridayIfSaturday(self):
         d = Date(29, 3, 2025)
         self.assertEqual(d.getLastWeekDayDate().toString(), "2025-03-28")

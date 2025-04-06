@@ -1,35 +1,42 @@
-import yfinance as yf
-
+from investments.ticker.ticker import Ticker
 from investments.date import Date
 
 
 class Position:
 
-    def __init__(self, ticker: str):
-        self.yf_ticker = yf.Ticker(ticker)
+    def __init__(self, ticker: Ticker):
+        self._ticker = ticker
+        self._changes = PositionChanges()
 
-    def getPriceOn(self, date: Date):
-        if date.isWeekDay():
-            return self.__getTickerOpenPriceOn(date)
+    def registerBuy(self, date: Date, amount: float):
+        self._changes.registerBuy(date, amount)
 
-        return self.__getTickerClosePriceOn(date.getLastWeekDayDate())
+    def registerSell(self, date: Date, amount: float):
+        self._changes.registerSell(date, amount)
 
-    def __getTickerOpenPriceOn(self, date: Date):
-        start_date = date
-        end_date = date.getNextDay()
+    def getValueOn(self, date: Date):
+        amount = self._changes.getAmountOn(date)
+        price = self._ticker.getPriceOn(date)
 
-        history = self.yf_ticker.history(
-            start=start_date.toString(), end=end_date.toString()
-        )
+        return amount * price
 
-        return round(history.loc[start_date.toString(), "Open"], 2)
 
-    def __getTickerClosePriceOn(self, date: Date):
-        start_date = date
-        end_date = date.getNextDay()
+class PositionChanges:
 
-        history = self.yf_ticker.history(
-            start=start_date.toString(), end=end_date.toString()
-        )
+    def __init__(self):
+        self._changes = []
 
-        return round(history.loc[start_date.toString(), "Close"], 2)
+    def registerBuy(self, date: Date, amount: float):
+        self._changes.append({"date": date, "amount": amount})
+
+    def registerSell(self, date: Date, amount: float):
+        self._changes.append({"date": date, "amount": (-1) * amount})
+
+    def getAmountOn(self, date: Date):
+        amount = 0
+
+        for change in self._changes:
+            if change["date"].isBefore(date):
+                amount += change["amount"]
+
+        return amount
