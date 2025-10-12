@@ -1,4 +1,8 @@
 CASH = "deposit"
+DIVIDEND = "dividend"
+FREE_FUNDS_INTEREST = "free_funds_interest"
+FREE_FUNDS_INTEREST_TAX = "free_funds_interest_tax"
+STOCK_PURCHASE = "stock_purchase"
 
 
 class CashOperation:
