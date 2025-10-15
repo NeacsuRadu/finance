@@ -11,6 +11,7 @@ from investments.position import Position
 from investments.ticker.yahoo_finance_ticker import YahooFinanceTicker
 from datetime import datetime
 from typing import Dict, Any, List
+from collections import defaultdict
 
 
 class BrokerPortofolio(Portofolio):
@@ -226,3 +227,98 @@ class BrokerPortofolio(Portofolio):
             "positions_count": len(self.positions),
             "cash_operations_summary": self.get_cash_operations_summary(),
         }
+
+    def get_statistics_by_year(self) -> Dict[str, Dict[int, float]]:
+        """
+        Get portfolio statistics grouped by year.
+
+        Returns:
+            Dictionary containing statistics by year
+        """
+        deposits_by_year = defaultdict(float)
+        dividends_by_year = defaultdict(float)
+        stock_purchases_by_year = defaultdict(float)
+
+        for operation in self.cashOperations:
+            year = operation.timestamp.year
+            operation_type = operation.getType()
+            amount = operation.getAmount()
+
+            if operation_type == CASH:
+                deposits_by_year[year] += amount
+            elif operation_type == DIVIDEND:
+                dividends_by_year[year] += amount
+            elif operation_type == STOCK_PURCHASE:
+                # Stock purchases are negative amounts, so we take absolute value
+                stock_purchases_by_year[year] += abs(amount)
+
+        return {
+            "deposits": dict(deposits_by_year),
+            "dividends": dict(dividends_by_year),
+            "stock_purchases": dict(stock_purchases_by_year),
+        }
+
+    def get_statistics_by_month(self) -> Dict[str, Dict[str, float]]:
+        """
+        Get portfolio statistics grouped by month.
+
+        Returns:
+            Dictionary containing statistics by month
+        """
+        deposits_by_month = defaultdict(float)
+        dividends_by_month = defaultdict(float)
+        stock_purchases_by_month = defaultdict(float)
+
+        for operation in self.cashOperations:
+            month_key = operation.timestamp.strftime("%Y-%m")
+            operation_type = operation.getType()
+            amount = operation.getAmount()
+
+            if operation_type == CASH:
+                deposits_by_month[month_key] += amount
+            elif operation_type == DIVIDEND:
+                dividends_by_month[month_key] += amount
+            elif operation_type == STOCK_PURCHASE:
+                # Stock purchases are negative amounts, so we take absolute value
+                stock_purchases_by_month[month_key] += abs(amount)
+
+        return {
+            "deposits": dict(deposits_by_month),
+            "dividends": dict(dividends_by_month),
+            "stock_purchases": dict(stock_purchases_by_month),
+        }
+
+    def output_statistics(self, statistics: Dict[str, Any]) -> None:
+        """
+        Output statistics to console.
+        This is a basic console implementation. Can be overridden for other output formats.
+
+        Args:
+            statistics: Dictionary containing the statistics to output
+        """
+        print("=" * 60)
+        print("PORTFOLIO STATISTICS")
+        print("=" * 60)
+
+        # Output deposits
+        if "deposits" in statistics:
+            print("\nDEPOSITS:")
+            print("-" * 20)
+            for time_period, amount in sorted(statistics["deposits"].items()):
+                print(f"{time_period}: €{amount:,.2f}")
+
+        # Output dividends
+        if "dividends" in statistics:
+            print("\nDIVIDENDS:")
+            print("-" * 20)
+            for time_period, amount in sorted(statistics["dividends"].items()):
+                print(f"{time_period}: €{amount:,.2f}")
+
+        # Output stock purchases
+        if "stock_purchases" in statistics:
+            print("\nSTOCK PURCHASES:")
+            print("-" * 20)
+            for time_period, amount in sorted(statistics["stock_purchases"].items()):
+                print(f"{time_period}: €{amount:,.2f}")
+
+        print("=" * 60)
