@@ -14,6 +14,9 @@ class FakeTicker(Ticker):
 
         return 67.5
 
+    def getTickerName(self) -> str:
+        return "FAKE"
+
 
 class TestPosition(unittest.TestCase):
     def setUp(self):

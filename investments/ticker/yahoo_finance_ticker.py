@@ -7,6 +7,7 @@ from investments.date import Date
 class YahooFinanceTicker(Ticker):
 
     def __init__(self, ticker: str):
+        self.ticker = ticker
         self.yf_ticker = yf.Ticker(ticker)
 
     def getPriceOn(self, date: Date):
@@ -14,6 +15,9 @@ class YahooFinanceTicker(Ticker):
             return self.__getTickerOpenPriceOn(date)
 
         return self.__getTickerClosePriceOn(date.getLastWeekDayDate())
+
+    def getTickerName(self) -> str:
+        return self.ticker
 
     def __getTickerOpenPriceOn(self, date: Date):
         start_date = date
