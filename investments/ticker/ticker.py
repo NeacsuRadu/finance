@@ -7,3 +7,7 @@ class Ticker(ABC):
     @abstractmethod
     def getPriceOn(self, date: Date):
         pass
+
+    @abstractmethod
+    def getTickerName(self) -> str:
+        pass
